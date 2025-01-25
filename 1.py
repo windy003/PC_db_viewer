@@ -28,7 +28,7 @@ class ContentDialog(QDialog):
 class DBBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('数据库浏览器 v2025/1/23-00')
+        self.setWindowTitle('数据库浏览器 v2025/1/25-00')
         self.setGeometry(100, 100, 800, 600)
         
         # 设置应用图标
@@ -71,6 +71,10 @@ class DBBrowser(QMainWindow):
         
         self.conn = None
         
+        # 检查是否有命令行参数（双击文件时会传入文件路径）
+        if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
+            self.open_database_file(sys.argv[1])
+        
     def get_resource_path(self, relative_path):
         """获取资源文件的绝对路径"""
         try:
@@ -80,23 +84,26 @@ class DBBrowser(QMainWindow):
             base_path = os.path.abspath(".")
         return os.path.join(base_path, relative_path)
         
+    def open_database_file(self, file_path):
+        """打开指定路径的数据库文件"""
+        try:
+            self.conn = sqlite3.connect(file_path)
+            self.last_directory = file_path
+            self.load_tables()
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, '错误', f'无法打开数据库：{str(e)}')
+
     def open_database(self):
         initial_path = self.last_directory if self.last_directory else ''
         file_name, _ = QFileDialog.getOpenFileName(
             self, 
             '选择数据库文件', 
-            initial_path,  # 使用上次的路径
+            initial_path,
             'SQLite数据库文件 (*.db)'
         )
         if file_name:
-            try:
-                self.conn = sqlite3.connect(file_name)
-                # 保存新的路径
-                self.last_directory = file_name
-                self.load_tables()
-            except sqlite3.Error as e:
-                QMessageBox.critical(self, '错误', f'无法打开数据库：{str(e)}')
-                
+            self.open_database_file(file_name)
+        
     def load_tables(self):
         if self.conn:
             cursor = self.conn.cursor()
