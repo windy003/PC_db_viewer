@@ -28,7 +28,7 @@ class ContentDialog(QDialog):
 class DBBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('数据库浏览器 v2025/1/25-00')
+        self.setWindowTitle('数据库浏览器 v2025/1/25-01')
         self.setGeometry(100, 100, 800, 600)
         
         # 设置应用图标
@@ -81,7 +81,8 @@ class DBBrowser(QMainWindow):
             # PyInstaller创建临时文件夹,将路径存储在_MEIPASS中
             base_path = sys._MEIPASS
         except Exception:
-            base_path = os.path.abspath(".")
+            # 如果不是打包后的环境，就使用当前目录
+            base_path = os.path.dirname(os.path.abspath(__file__))
         return os.path.join(base_path, relative_path)
         
     def open_database_file(self, file_path):
