@@ -28,7 +28,7 @@ class ContentDialog(QDialog):
 class DBBrowser(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('数据库浏览器 v2025/1/25-01')
+        self.setWindowTitle('数据库浏览器 v2025/1/25-02')
         self.setGeometry(100, 100, 800, 600)
         
         # 设置应用图标
@@ -52,6 +52,9 @@ class DBBrowser(QMainWindow):
         self.table_combo = QComboBox()
         self.table_widget = QTableWidget()
         
+        # 添加显示当前数据库名的标签
+        self.db_name_label = QLabel('当前数据库: 未打开')
+        
         # 设置标签的伙伴控件
         self.table_label.setBuddy(self.table_combo)
         
@@ -59,6 +62,7 @@ class DBBrowser(QMainWindow):
         button_layout.addWidget(self.open_button)
         button_layout.addWidget(self.table_label)
         button_layout.addWidget(self.table_combo)
+        layout.addWidget(self.db_name_label)  # 添加数据库名标签到布局
         layout.addLayout(button_layout)
         layout.addWidget(self.table_widget)
         
@@ -91,6 +95,7 @@ class DBBrowser(QMainWindow):
             self.conn = sqlite3.connect(file_path)
             self.last_directory = file_path
             self.load_tables()
+            self.db_name_label.setText(f'当前数据库: {os.path.basename(file_path)}')  # 更新数据库名标签
         except sqlite3.Error as e:
             QMessageBox.critical(self, '错误', f'无法打开数据库：{str(e)}')
 
