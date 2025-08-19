@@ -32,7 +32,7 @@ class DBBrowser(QMainWindow):
         self.setGeometry(100, 100, 800, 600)
         
         # 设置应用图标
-        icon_path = self.get_resource_path('icon.ico')  # 假设图标文件名为icon.ico
+        icon_path = DBBrowser.get_resource_path('icon.ico')  # 假设图标文件名为icon.ico
         self.setWindowIcon(QIcon(icon_path))
         
         # 添加最后打开的路径变量
@@ -79,7 +79,8 @@ class DBBrowser(QMainWindow):
         if len(sys.argv) > 1 and os.path.isfile(sys.argv[1]):
             self.open_database_file(sys.argv[1])
         
-    def get_resource_path(self, relative_path):
+    @staticmethod
+    def get_resource_path(relative_path):
         """获取资源文件的绝对路径"""
         try:
             # PyInstaller创建临时文件夹,将路径存储在_MEIPASS中
@@ -166,7 +167,7 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     
     # 设置应用程序图标
-    icon_path = DBBrowser.get_resource_path(DBBrowser, 'icon.ico')  # 假设图标文件名为icon.ico
+    icon_path = DBBrowser.get_resource_path('icon.ico')  # 假设图标文件名为icon.ico
     app.setWindowIcon(QIcon(icon_path))
     
     browser = DBBrowser()
